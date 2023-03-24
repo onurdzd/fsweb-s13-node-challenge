@@ -19,7 +19,8 @@ router.get("/", async (req, res, next) => {
 
 router.get("/:id", mw.checkId, async (req, res, next) => {
   try {
-    const project = await req.body;
+    const id=req.params.id
+    const project = await Project.get(id);
     res.status(201).json(project);
   } catch (error) {
     next(error);
@@ -38,13 +39,12 @@ router.post("/", mw.bodyCheck, async (req, res, next) => {
 router.put("/:id", mw.bodyCheck, mw.checkId, async (req, res, next) => {
   try {
     let id = req.params.id;
-    let changes = await req.body;
-    let newProject = await Project.update(id, changes);
-    res.status(201).json(newProject);
+    let updatedProject = await Project.update(id,{name:req.body.name,description:req.body.description});
+    res.status(201).json(updatedProject);
   } catch (error) {
     next(error);
   }
-}); //update fonksiyonu sqlde actions column yok hatası veriyor
+});
 
 router.delete("/:id", mw.checkId, async (req, res, next) => {
   try {
