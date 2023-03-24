@@ -17,10 +17,10 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", mw.checkId, async (req, res, next) => {
+router.get("/:id", mw.checkId, (req, res, next) => {
   try {
     const id=req.params.id
-    const project = await Project.get(id);
+    const project = req.project
     res.status(201).json(project);
   } catch (error) {
     next(error);
@@ -36,10 +36,10 @@ router.post("/", mw.bodyCheck, async (req, res, next) => {
   }
 });
 
-router.put("/:id", mw.bodyCheck, mw.checkId, async (req, res, next) => {
+router.put("/:id", mw.checkId, mw.bodyCheck, async (req, res, next) => {
   try {
     let id = req.params.id;
-    let updatedProject = await Project.update(id,{name:req.body.name,description:req.body.description});
+    let updatedProject = await Project.update(id,req.bodyCheckPayload);
     res.status(201).json(updatedProject);
   } catch (error) {
     next(error);

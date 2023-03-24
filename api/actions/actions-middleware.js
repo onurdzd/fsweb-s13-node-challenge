@@ -8,19 +8,22 @@ const checkId = async (req, res, next) => {
   if (!action) {
     res.status(404).json({ message: "Verilen idli action bulunamadı" });
   } else {
+    req.existAction=action
     next();
   }
 };
 
 const checkBody = (req, res, next) => {
   const body = req.body;
+  let validDescription=body.description && body.description.length<=128
   if (
-    !body.description || body.description.length>120 ||
+    !validDescription ||
     !body.notes ||
     !body.project_id
   ) {
     res.status(400).json({ message: "Eksik bilgi girildi" });
   } else {
+    req.checkedBody={description:body.description,notes:body.notes,project_id:body.project_id}
     next();
   }
 };

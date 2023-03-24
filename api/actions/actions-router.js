@@ -14,10 +14,10 @@ router.get("/",async (req,res,next)=>{
     }
 })
 
-router.get("/:id",mw.checkId,async (req,res,next)=>{
+router.get("/:id",mw.checkId,(req,res,next)=>{
     try {
         const id = req.params.id;
-        const action=await Action.get(id)
+        const action=req.existAction
         res.status(201).json(action)
     } catch (error) {
         next(error)
@@ -26,7 +26,7 @@ router.get("/:id",mw.checkId,async (req,res,next)=>{
 
 router.post("/",mw.checkBody,mw.checkProjectId,async (req,res,next)=>{
     try {
-        let newAction=await Action.insert(req.body)
+        let newAction=await Action.insert(req.checkedBody)
         res.status(201).json(newAction)
     } catch (error) {
         next(error)
